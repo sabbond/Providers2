@@ -3,8 +3,9 @@ using Providers.Models;
 
 namespace Providers.Services;
 
-public class ProviderCache : IProviderCache
+public class ProviderCache(ITimeService timeService) : IProviderCache
 {
+
     private class CacheItem
     {
         public Provider Provider { get; set; }
@@ -16,7 +17,7 @@ public class ProviderCache : IProviderCache
     {
         CacheItem? result;
         var cached = ProviderStore.TryGetValue(id, out result);
-        if (!cached || result?.CacheTime < DateTime.Now - CacheDuration) return null;
+        if (!cached || result?.CacheTime < timeService.Now() - CacheDuration) return null;
         return result?.Provider;
     }
 
@@ -24,8 +25,8 @@ public class ProviderCache : IProviderCache
     {
         ProviderStore.AddOrUpdate(
             provider.ProviderId,
-            new CacheItem() { Provider = provider, CacheTime = DateTime.Now },
-            (key, oldValue) => new CacheItem() { Provider = provider, CacheTime = DateTime.Now }
+            new CacheItem() { Provider = provider, CacheTime = timeService.Now() },
+            (key, oldValue) => new CacheItem() { Provider = provider, CacheTime = timeService.Now() }
             );
     }
 }

@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProviderService, ProviderService>();
 builder.Services.AddScoped<IProviderFeed, ProviderFeed>();
 builder.Services.AddSingleton<IProviderCache, ProviderCache>();
+builder.Services.AddSingleton<ITimeService, TimeService>();
 
 var app = builder.Build();
 
